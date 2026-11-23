@@ -30,7 +30,7 @@
             },
             {
               "id": "99f07ab6-703a-49ce-877c-213459d5fe49",
-              "name": "=recieved_at",
+              "name": "=received_at",
               "value": "={{ $now }}",
               "type": "string"
             }
@@ -91,7 +91,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "33ef7a67-bcc8-4db2-a0f7-09ab70ea466e",
+  "versionId": "47026e98-4622-40cb-bebe-331c21fcc04d",
   "meta": {
     "instanceId": "6ecaafd9b907b0b02bc8e2e53aafb1a44e515934e4dee0dd1ca89fe26ae176a0"
   },
