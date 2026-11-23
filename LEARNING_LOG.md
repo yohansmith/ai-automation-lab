@@ -27,14 +27,14 @@
 - What happened: `curl -i` returned `HTTP/1.1 404 Not Found` with the JSON message: the requested webhook "hello" is not registered. The hint said to click "Execute workflow" on the canvas, and that in test mode the webhook only works for one call after clicking.
 - Lesson: the test URL is only for building and debugging, one request per click. The production URL (`/webhook/...`) works whenever the workflow is published. The `-i` flag in curl shows the status line and headers, which helps when debugging.
 
-### Experiment 4: wrong env variable (optional)
+### Experiment 4: wrong env variable
 
-- Prediction:
-- What happened:
-- Lesson:
+- Prediction: if I change POSTGRES_PASSWORD in .env after the database already exists, n8n will fail to connect to Postgres, because the database keeps the password it was created with.
+- What happened: after changing one character in the password and running `docker compose up -d`, both containers were recreated. Postgres showed "healthy", but n8n logged `password authentication failed for user "n8n"` five times with increasing retry delays, then crashed with "There was an error initializing DB". Docker kept restarting it (`restart: unless-stopped`).
+- Lesson: Postgres only reads POSTGRES_PASSWORD when it first creates the database, so changing it later makes the app and database disagree. The Postgres healthcheck passes anyway because it checks that the server is up, not the password. Read the first error line in `docker compose logs`, not the stack trace. Back up .env before editing it.
 
 ### Experiment 5: `docker compose down -v`
 
-- Prediction:
+- Prediction: - Prediction: the `-v` flag will delete the volumes, so my account, workflow and execution history will be gone and n8n will show the first-time setup screen. My .env file and the JSON in Git will not be affected.
 - What happened:
 - Lesson:
