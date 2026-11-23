@@ -1,0 +1,101 @@
+{
+  "name": "01-hello-webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hello",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ab565124-310b-4b20-9500-d2fa5d7cd3bb",
+      "name": "Webhook",
+      "webhookId": "3a942e71-e7d3-470f-af4f-3926487d29d0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a526f44-50d7-4579-b3bd-c7814127efc7",
+              "name": "=message",
+              "value": "=Hello {{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "99f07ab6-703a-49ce-877c-213459d5fe49",
+              "name": "=recieved_at",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "212f914f-fd47-4ec0-933d-486f5a1a3654",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "2492edab-24d8-43d6-8dee-31fe50f4c4e8",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "33ef7a67-bcc8-4db2-a0f7-09ab70ea466e",
+  "meta": {
+    "instanceId": "6ecaafd9b907b0b02bc8e2e53aafb1a44e515934e4dee0dd1ca89fe26ae176a0"
+  },
+  "nodeGroups": [],
+  "id": "R9pcLPfkT8ziMp1U",
+  "tags": []
+}
