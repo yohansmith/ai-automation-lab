@@ -36,5 +36,5 @@
 ### Experiment 5: `docker compose down -v`
 
 - Prediction: - Prediction: the `-v` flag will delete the volumes, so my account, workflow and execution history will be gone and n8n will show the first-time setup screen. My .env file and the JSON in Git will not be affected.
-- What happened:
-- Lesson:
+- What happened: `docker volume ls` showed `n8n_n8n_data` and `n8n_pg_data` before `down -v` and neither afterwards. After `up -d`, n8n showed the owner account setup screen with no workflow and no execution history. I recreated the account, imported `01-hello-webhook.json` from the repo, published it, and the production webhook worked again. My .env was untouched.
+- Lesson: `down -v` permanently deletes volumes, which means the database and n8n data. Anything not exported to Git is lost. That's why I export workflows to the repo and keep a backup of .env. Never run `down -v` on a real deployment.
