@@ -1,0 +1,14 @@
+{
+  "ticket": {
+    "id": "T-1001",
+    "created": "2026-11-20T09:15:00Z",
+    "priority": "HIGH ",
+    "customer": { "name": "  Nimal Perera ", "email": "NIMAL@Example.COM", "country": "LK" },
+    "subject": "Refund not received",
+    "tags": "billing, urgent ,refund",
+    "items": [
+      { "sku": "A-100", "qty": "2", "price": "1500.50" },
+      { "sku": "B-200", "qty": "1", "price": "799" }
+    ]
+  }
+}

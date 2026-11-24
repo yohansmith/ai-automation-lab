@@ -1,0 +1,13 @@
+{
+  "ticket": {
+    "id": "T-1003",
+    "created": "2026-11-20T11:30:00Z",
+    "priority": "Medium",
+    "customer": { "name": "Amaya Fernando", "email": "amaya@example.com", "country": "IN" },
+    "subject": "Wrong size delivered",
+    "tags": "shipping, exchange",
+    "items": [
+      { "sku": "D-400", "qty": "3", "price": "1200" }
+    ]
+  }
+}

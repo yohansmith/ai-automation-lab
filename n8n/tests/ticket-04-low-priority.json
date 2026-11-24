@@ -1,0 +1,13 @@
+{
+  "ticket": {
+    "id": "T-1004",
+    "created": "2026-11-20T12:45:00Z",
+    "priority": "low",
+    "customer": { "name": "Ravi Kumar", "email": "ravi@example.com", "country": "GB" },
+    "subject": "Question about warranty",
+    "tags": "warranty",
+    "items": [
+      { "sku": "E-500", "qty": "1", "price": "4999.99" }
+    ]
+  }
+}

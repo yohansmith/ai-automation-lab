@@ -1,0 +1,13 @@
+{
+  "ticket": {
+    "id": "T-1006",
+    "created": "2026-11-20T13:30:00Z",
+    "priority": "high",
+    "customer": { "name": "Bad Email", "email": "not-an-email", "country": "LK" },
+    "subject": "Invalid email format",
+    "tags": "test",
+    "items": [
+      { "sku": "A-100", "qty": "1", "price": "100" }
+    ]
+  }
+}

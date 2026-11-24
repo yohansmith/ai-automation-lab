@@ -1,0 +1,13 @@
+{
+  "ticket": {
+    "id": "T-1008",
+    "created": "2026-11-20T14:30:00Z",
+    "priority": "urgent!!",
+    "customer": { "name": "Odd Priority", "email": "odd@example.com", "country": "LK" },
+    "subject": "Priority value not in the list",
+    "tags": "test",
+    "items": [
+      { "sku": "A-100", "qty": "1", "price": "100" }
+    ]
+  }
+}

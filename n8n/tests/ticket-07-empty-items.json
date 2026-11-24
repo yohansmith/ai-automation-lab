@@ -1,0 +1,11 @@
+{
+  "ticket": {
+    "id": "T-1007",
+    "created": "2026-11-20T14:00:00Z",
+    "priority": "medium",
+    "customer": { "name": "Empty Cart", "email": "empty@example.com", "country": "LK" },
+    "subject": "Ticket with no items",
+    "tags": "test",
+    "items": []
+  }
+}

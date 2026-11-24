@@ -1,0 +1,13 @@
+{
+  "ticket": {
+    "id": "T-1009",
+    "created": "2026-11-20T15:00:00Z",
+    "priority": "low",
+    "customer": { "name": "Nowhere Land", "email": "nowhere@example.com", "country": "ZZ" },
+    "subject": "Country code that does not exist",
+    "tags": "test",
+    "items": [
+      { "sku": "A-100", "qty": "1", "price": "100" }
+    ]
+  }
+}

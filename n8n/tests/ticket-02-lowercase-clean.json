@@ -1,0 +1,13 @@
+{
+  "ticket": {
+    "id": "T-1002",
+    "created": "2026-11-20T10:00:00Z",
+    "priority": "high",
+    "customer": { "name": "Kasun Silva", "email": "kasun@example.com", "country": "LK" },
+    "subject": "Login problem",
+    "tags": "account,login",
+    "items": [
+      { "sku": "C-300", "qty": "1", "price": "250" }
+    ]
+  }
+}

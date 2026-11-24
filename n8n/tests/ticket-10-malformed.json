@@ -1,0 +1,12 @@
+{
+  "ticket": {
+    "id": "T-1010",
+    "created": "2026-11-20T15:30:00Z",
+    "priority": "high",
+    "customer": { "name": "Broken JSON", "email": "broken@example.com", "country": "LK" },
+    "subject": "Missing a closing brace on purpose",
+    "tags": "test",
+    "items": [
+      { "sku": "A-100", "qty": "1", "price": "100" }
+    ]
+  }
