@@ -82,6 +82,20 @@ Example response:
 { "message": "Hello Yohan", "received_at": "2026-11-23T21:25:38.157+05:30" }
 ```
 
+## Workflow 02: Ticket Normalizer
+
+Cleans and validates messy support-ticket JSON. See [docs/ticket-normalizer.md](docs/ticket-normalizer.md) for the flow, schemas, error codes and test results.
+
+```bash
+# run all 10 test payloads against the published workflow
+cd n8n/tests
+for f in ticket-*.json; do
+  echo "=== $f"
+  curl -s -w "\nHTTP %{http_code}\n" -X POST http://localhost:5678/webhook/ticket \
+    -H "Content-Type: application/json" -d @"$f"
+done
+```
+
 ## Common commands
 
 ```bash
@@ -130,6 +144,9 @@ The workflow isn't published, or you used `/webhook-test/` instead of `/webhook/
 
 **SSH `Host key verification failed` on first GitHub connection**
 Type the full word `yes` at the fingerprint prompt, or run `ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts`.
+
+**"No Respond to Webhook node found in the workflow"**
+A Webhook set to respond using a Respond to Webhook node needs one in the workflow. Add a Respond to Webhook node and connect it.
 
 ## Notes and limitations
 

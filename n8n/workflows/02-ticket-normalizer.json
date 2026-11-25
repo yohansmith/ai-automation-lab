@@ -1,0 +1,552 @@
+{
+  "name": "02-ticket-normalizer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ticket",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f92acee1-2030-4dd6-92cf-c7b0136011ab",
+      "name": "Webhook",
+      "webhookId": "498693b3-30d2-436b-be6d-1cbc1914fd75"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1808,
+        -144
+      ],
+      "id": "1db9fd61-8ed7-4005-9e86-e144e0e28717",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b05582eb-d39d-4c6e-b622-7ddfdab77efd",
+              "name": "=ticket_id",
+              "value": "={{ $json.body.ticket?.id }}",
+              "type": "string"
+            },
+            {
+              "id": "c3197928-773e-41ce-9bc3-80bead518931",
+              "name": "=created",
+              "value": "={{ $json.body.ticket?.created }}",
+              "type": "string"
+            },
+            {
+              "id": "8feceaef-48f9-454e-accc-e73757f709e8",
+              "name": "=priority",
+              "value": "={{ ($json.body.ticket?.priority ?? '').trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "b70f8f0a-95e0-4fe0-94bf-eb7630431bfd",
+              "name": "=name",
+              "value": "={{ ($json.body.ticket?.customer?.name ?? '').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "d3b533bf-6094-4358-968d-d12f05c4d476",
+              "name": "=email",
+              "value": "={{ ($json.body.ticket?.customer?.email ?? '').trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "f417b346-c1f8-4954-b4c0-e1bd02ad8023",
+              "name": "=country",
+              "value": "={{ ($json.body.ticket?.customer?.country ?? '').trim().toUpperCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "a94305dd-6495-45c7-b907-6d973b5e51f1",
+              "name": "=subject",
+              "value": "={{ $json.body.ticket?.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "54653136-61a5-4253-ae30-d1fe949765a1",
+              "name": "=tags",
+              "value": "={{ $json.body.ticket?.tags ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "eb460f88-3e24-450a-8a64-f55b01f8471f",
+              "name": "=items",
+              "value": "={{ $json.body.ticket?.items ?? [] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "b3edc65a-c771-4e0a-8641-cc0e6ef4b4ad",
+      "name": "Flatten"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "006c075f-8b94-405a-98d4-d8947a58d2bf",
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        384,
+        0
+      ],
+      "id": "ce1be7ca-aec1-4b19-8f1a-2f7c530da5e9",
+      "name": "Valid email?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"error\": \"invalid_or_missing_email\" }",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        656,
+        336
+      ],
+      "id": "b6e48c5a-48d3-4746-b435-9b98548d9724",
+      "name": "Respond 400 email"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "9e7821ab-f86a-4326-9851-72787b1a091c",
+              "leftValue": "={{ $json.items }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        608,
+        -96
+      ],
+      "id": "1f3fe607-398f-41fe-aa97-36fd6920c320",
+      "name": "Has items?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"error\": \"no_items\" }",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        816,
+        128
+      ],
+      "id": "6e860672-1709-4775-be89-ab0274a9ce25",
+      "name": "Respond 422 no items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        1008,
+        -288
+      ],
+      "id": "64976f51-a9b4-48b5-869a-5cec0c681470",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb6355c1-ee17-4494-9ab0-1ddc12e058e9",
+              "name": "=sku",
+              "value": "={{ $json.sku }}",
+              "type": "string"
+            },
+            {
+              "id": "cb55f4d9-16c2-479e-bea4-137298aee4f5",
+              "name": "qty",
+              "value": "={{ Number($json.qty) }}",
+              "type": "number"
+            },
+            {
+              "id": "9d7267f7-997d-451e-a3d3-6c99f383f2e6",
+              "name": "unit_price",
+              "value": "={{ Number($json.price) }}",
+              "type": "number"
+            },
+            {
+              "id": "e147f767-fa9e-403a-b3cb-7a2c12353a72",
+              "name": "line_total",
+              "value": "={{ Number($json.qty) * Number($json.price) }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1168,
+        -288
+      ],
+      "id": "8facb753-4406-42c1-9c58-1580a489ac5c",
+      "name": "Line items"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "lines",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -288
+      ],
+      "id": "9aea3218-3502-42da-bb5b-c9a624c93f18",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "6ed5ea07-02b7-44e3-b5d6-0f816cd51b2d",
+              "leftValue": "={{ ['high','medium','low'].includes($json.priority) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        816,
+        -192
+      ],
+      "id": "84bb4e75-5cbe-4e23-b666-a20888ad9301",
+      "name": "Valid priority?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"error\": \"unknown_priority\" }",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1008,
+        -96
+      ],
+      "id": "ba6fba53-cc30-48e7-b476-a785bf63f2e4",
+      "name": "Respond 422 priority"
+    },
+    {
+      "parameters": {
+        "url": "=https://restcountries.com/v3.1/alpha/{{ $('Flatten').first().json.country }}?fields=name,region",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1472,
+        -288
+      ],
+      "id": "4dfd3f15-aed9-4837-9ab8-8f03749328b4",
+      "name": "Country lookup",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ticket details come from the Flatten node (Split Out and Aggregate dropped them)\nconst flat = $('Flatten').first().json;\nconst lines = $input.first().json.lines ?? [];\n\n// SLA by priority (priority was already validated and lowercased)\nconst SLA_HOURS = { high: 4, medium: 24, low: 72 };\n\n// Small reference table, replacing the retired country API\nconst COUNTRIES = {\n  LK: { name: 'Sri Lanka', region: 'Asia' },\n  IN: { name: 'India', region: 'Asia' },\n  SG: { name: 'Singapore', region: 'Asia' },\n  AE: { name: 'United Arab Emirates', region: 'Asia' },\n  GB: { name: 'United Kingdom', region: 'Europe' },\n  DE: { name: 'Germany', region: 'Europe' },\n  US: { name: 'United States', region: 'Americas' },\n  AU: { name: 'Australia', region: 'Oceania' },\n};\nconst country = COUNTRIES[flat.country] ?? { name: null, region: null };\n\n// \"billing, urgent ,refund\" becomes [\"billing\",\"urgent\",\"refund\"]\nconst tags = String(flat.tags ?? '')\n  .split(',')\n  .map(t => t.trim())\n  .filter(Boolean);\n\nconst orderTotal =\n  Math.round(lines.reduce((sum, l) => sum + l.line_total, 0) * 100) / 100;\n\nreturn [{\n  json: {\n    ticket_id: flat.ticket_id,\n    created_at: flat.created,\n    priority: flat.priority,\n    sla_hours: SLA_HOURS[flat.priority],\n    customer: {\n      name: flat.name,\n      email: flat.email,\n      country_code: flat.country,\n      country_name: country.name,\n      region: country.region,\n    },\n    subject: flat.subject,\n    tags,\n    items: lines,\n    order_total: orderTotal,\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1616,
+        -288
+      ],
+      "id": "c33618fe-264d-4538-b641-7f4caa19d4d5",
+      "name": "Build response"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "localhost:5678",
+            "user-agent": "curl/8.18.0",
+            "accept": "*/*",
+            "content-type": "application/json",
+            "content-length": "395"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "ticket": {
+              "id": "T-1001",
+              "created": "2026-11-20T09:15:00Z",
+              "priority": "HIGH ",
+              "customer": {
+                "name": "  Nimal Perera ",
+                "email": "NIMAL@Example.COM",
+                "country": "LK"
+              },
+              "subject": "Refund not received",
+              "tags": "billing, urgent ,refund",
+              "items": [
+                {
+                  "sku": "A-100",
+                  "qty": "2",
+                  "price": "1500.50"
+                },
+                {
+                  "sku": "B-200",
+                  "qty": "1",
+                  "price": "799"
+                }
+              ]
+            }
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/ticket",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Flatten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten": {
+      "main": [
+        [
+          {
+            "node": "Valid email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid email?": {
+      "main": [
+        [
+          {
+            "node": "Has items?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 400 email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has items?": {
+      "main": [
+        [
+          {
+            "node": "Valid priority?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 422 no items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Line items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Line items": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Country lookup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid priority?": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond 422 priority",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Country lookup": {
+      "main": [
+        [
+          {
+            "node": "Build response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "20520e44-7815-4b87-8e06-445a2891cd00",
+  "meta": {
+    "instanceId": "ab8c8ac0d158abd56b54ee95a3897088597b662a305f958c0588d322a17c0379"
+  },
+  "nodeGroups": [],
+  "id": "pcuIz3oTzJAtqqiZ",
+  "tags": []
+}
